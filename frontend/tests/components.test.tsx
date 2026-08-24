@@ -4,7 +4,9 @@ import { Badge } from '../components/ui/Badge';
 import { LoadingState } from '../components/ui/LoadingState';
 import { ErrorState } from '../components/ui/ErrorState';
 import { TopTwoComparison } from '../components/recommendations/TopTwoComparison';
-import { CandidateRecommendation } from '../lib/types';
+import { AnomalyList } from '../components/dashboard/AnomalyList';
+import { CountUpNumber } from '../components/ui/CountUpNumber';
+import { CandidateRecommendation, DetectedAnomalyGroup } from '../lib/types';
 
 describe('Frontend UI Components', () => {
   test('renders Badge component with text and styling', () => {
@@ -58,5 +60,24 @@ describe('Frontend UI Components', () => {
     expect(screen.getByText('Raghav Sen')).toBeInTheDocument();
     expect(screen.getByText(/RANK #1 PRIMARY/i)).toBeInTheDocument();
     expect(screen.getByText(/RANK #2 RUNNER-UP/i)).toBeInTheDocument();
+  });
+
+  test('renders AnomalyList safely with anomaly groups', () => {
+    const mockAnomalies: DetectedAnomalyGroup[] = [
+      {
+        artist_folder: 'PO4_Drift',
+        category: 'photographers',
+        anomalies: ["Folder uses letter 'O' instead of digit '0'"],
+      },
+    ];
+
+    render(<AnomalyList anomalies={mockAnomalies} />);
+    expect(screen.getByText('PO4_Drift')).toBeInTheDocument();
+    expect(screen.getByText("Folder uses letter 'O' instead of digit '0'")).toBeInTheDocument();
+  });
+
+  test('renders CountUpNumber component with prefix and suffix', () => {
+    render(<CountUpNumber end={15} prefix="Total: " suffix=" Artists" duration={0} />);
+    expect(screen.getByText(/Total: 15 Artists/i)).toBeInTheDocument();
   });
 });

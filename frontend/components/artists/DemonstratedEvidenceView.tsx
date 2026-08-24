@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2, FileText, Film, Image as ImageIcon, Music, HelpCircle } from 'lucide-react';
+import { CheckCircle2, FileText, Film, Image as ImageIcon, Music, HelpCircle, ShieldCheck } from 'lucide-react';
 import { DemonstratedCapability, ProfileClaim, UnknownCapability } from '@/lib/types';
 import { Badge } from '@/components/ui/Badge';
 
@@ -16,64 +16,71 @@ export function DemonstratedEvidenceView({
   unknowns,
 }: DemonstratedEvidenceViewProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 animate-revealUp">
       {/* 1. Demonstrated Capabilities Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-indigo-400" />
-            <h3 className="text-base font-semibold text-white">
-              Demonstrated Capabilities ({demonstratedCapabilities.length})
-            </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-accent-indigo shrink-0" />
+            <h2 className="text-base font-bold text-text-primary uppercase tracking-wider">
+              01 // Verified Demonstrated Capabilities ({demonstratedCapabilities.length})
+            </h2>
           </div>
-          <span className="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded border border-indigo-500/20">
-            Backed by Media Evidence
-          </span>
+          <Badge variant="indigo">PHYSICAL MEDIA EVIDENCE CITATIONS</Badge>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {demonstratedCapabilities.map((cap) => (
             <div
               key={cap.capability_id}
-              className="p-5 rounded-2xl bg-surface-200/60 border border-slate-800 space-y-3"
+              className="p-6 rounded-xl bg-surface border border-border-subtle hover:border-border-strong transition-colors space-y-4"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Badge variant="indigo">{cap.dimension.replace(/_/g, ' ')}</Badge>
-                  <span className="text-xs font-mono text-slate-400">Strength: {cap.evidence_strength}</span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="indigo" size="md">
+                    {cap.dimension.replace(/_/g, ' ').toUpperCase()}
+                  </Badge>
+                  <span className="text-xs font-mono text-text-muted">
+                    Strength: <span className="text-text-primary font-semibold">{cap.evidence_strength}</span>
+                  </span>
                 </div>
-                <span className="text-xs font-mono text-emerald-400 flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Verified
+                <span className="text-xs font-mono text-accent-emerald flex items-center gap-1.5 font-semibold">
+                  <ShieldCheck className="w-4 h-4" /> VERIFIED EVIDENCE
                 </span>
               </div>
 
-              <p className="text-sm text-slate-200 leading-relaxed">{cap.description}</p>
+              <p className="text-sm text-text-primary leading-relaxed">{cap.description}</p>
 
-              {/* Citations block */}
+              {/* Direct Media Citations */}
               {cap.evidence_citations && cap.evidence_citations.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-slate-800 space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                    Evidence Citations:
+                <div className="pt-4 border-t border-border-subtle space-y-3">
+                  <span className="text-[11px] font-mono font-bold text-text-muted uppercase tracking-wider block">
+                    Observed Portfolio Assets ({cap.evidence_citations.length}):
                   </span>
-                  <div className="grid grid-cols-1 gap-2">
+
+                  <div className="grid grid-cols-1 gap-3">
                     {cap.evidence_citations.map((cit) => (
                       <div
                         key={cit.evidence_id}
-                        className="p-3 rounded-xl bg-surface-300/80 border border-slate-800 text-xs space-y-1.5"
+                        className="p-4 rounded-lg bg-surface-subtle border border-border-subtle text-xs space-y-2"
                       >
-                        <div className="flex items-center justify-between text-slate-300">
-                          <span className="font-mono text-indigo-300 font-medium flex items-center gap-1.5">
-                            <Film className="w-3.5 h-3.5 text-slate-400" /> {cit.file_name}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-text-secondary">
+                          <span className="font-mono text-accent-indigo font-bold flex items-center gap-1.5 break-all">
+                            <Film className="w-3.5 h-3.5 text-text-muted shrink-0" /> {cit.file_name}
                           </span>
-                          <span className="font-mono text-[11px] text-slate-400">{cit.timestamp_or_frame}</span>
+                          <span className="font-mono text-[11px] text-text-muted shrink-0 bg-surface px-2 py-0.5 rounded border border-border-subtle">
+                            {cit.timestamp_or_frame}
+                          </span>
                         </div>
-                        <p className="text-slate-400 text-xs leading-relaxed">{cit.citation_text}</p>
+
+                        <p className="text-text-secondary text-xs leading-relaxed">{cit.citation_text}</p>
+
                         {cit.observed_features && cit.observed_features.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mt-1">
+                          <div className="flex flex-wrap gap-1.5 pt-1">
                             {cit.observed_features.map((feat, idx) => (
                               <span
                                 key={idx}
-                                className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-400 text-slate-300 border border-slate-800"
+                                className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface text-text-secondary border border-border-subtle"
                               >
                                 {feat}
                               </span>
@@ -92,30 +99,35 @@ export function DemonstratedEvidenceView({
 
       {/* 2. Self-Reported Profile Claims Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-sky-400" />
-            <h3 className="text-base font-semibold text-white">
-              Self-Reported Profile Claims ({profileClaims.length})
-            </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-accent-primary shrink-0" />
+            <h2 className="text-base font-bold text-text-primary uppercase tracking-wider">
+              02 // Self-Reported Profile Claims ({profileClaims.length})
+            </h2>
           </div>
-          <span className="text-xs font-mono text-sky-400 bg-sky-500/10 px-2.5 py-0.5 rounded border border-sky-500/20">
-            Unverified Profile Statements
+          <span className="font-mono text-[10px] text-text-muted px-2 py-0.5 rounded bg-surface-subtle border border-border-subtle">
+            UNVERIFIED STATEMENTS FROM PROFILE DOCX
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {profileClaims.map((claim) => (
             <div
               key={claim.claim_id}
-              className="p-4 rounded-xl bg-surface-200/40 border border-slate-800/80 space-y-2"
+              className="p-5 rounded-xl bg-surface border border-border-subtle hover:border-border-strong transition-colors space-y-2.5 flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between">
-                <Badge variant="blue">{claim.dimension.replace(/_/g, ' ')}</Badge>
-                <span className="text-[10px] font-mono text-slate-400">CLAIM</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Badge variant="blue">{claim.dimension.replace(/_/g, ' ').toUpperCase()}</Badge>
+                  <span className="text-[10px] font-mono text-accent-primary px-1.5 py-0.2 rounded bg-accent-primary/10 border border-accent-primary/20">
+                    CLAIM
+                  </span>
+                </div>
+                <p className="text-xs text-text-secondary italic leading-relaxed">{`"${claim.statement}"`}</p>
               </div>
-              <p className="text-xs text-slate-300 italic">{`"${claim.statement}"`}</p>
-              <div className="text-[10px] font-mono text-slate-400">
+
+              <div className="text-[10px] font-mono text-text-muted pt-2 border-t border-border-subtle/60">
                 Source: {claim.source_context}
               </div>
             </div>
@@ -125,30 +137,33 @@ export function DemonstratedEvidenceView({
 
       {/* 3. Unknown Capabilities Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-slate-500" />
-            <h3 className="text-base font-semibold text-white">
-              Unknown Dimensions ({unknowns.length})
-            </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-text-muted shrink-0" />
+            <h2 className="text-base font-bold text-text-primary uppercase tracking-wider">
+              03 // Unknown Dimensions & Information Limits ({unknowns.length})
+            </h2>
           </div>
-          <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2.5 py-0.5 rounded border border-slate-700">
-            Neutral / No Evidence
+          <span className="font-mono text-[10px] text-text-muted px-2 py-0.5 rounded bg-surface-subtle border border-border-subtle">
+            ZERO PENALTY / STRICTLY NEUTRAL
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {unknowns.map((ukn) => (
             <div
               key={ukn.unknown_id}
-              className="p-4 rounded-xl bg-surface-200/20 border border-slate-800/60 space-y-1.5"
+              className="p-5 rounded-xl bg-surface border border-border-subtle space-y-2 flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between">
-                <Badge variant="slate">{ukn.dimension.replace(/_/g, ' ')}</Badge>
-                <span className="text-[10px] font-mono text-slate-400">UNKNOWN</span>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <Badge variant="slate">{ukn.dimension.replace(/_/g, ' ').toUpperCase()}</Badge>
+                  <span className="text-[10px] font-mono text-text-muted">UNKNOWN</span>
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed">{ukn.description}</p>
               </div>
-              <p className="text-xs text-slate-400">{ukn.description}</p>
-              <div className="text-[11px] text-slate-400 font-mono">
+
+              <div className="text-[11px] text-text-muted font-mono pt-2 border-t border-border-subtle/60">
                 Reason: {ukn.reason}
               </div>
             </div>

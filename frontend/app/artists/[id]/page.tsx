@@ -9,7 +9,7 @@ import { ErrorState } from '@/components/ui/ErrorState';
 import { api, ApiError } from '@/lib/api';
 import { ArtistDetail } from '@/lib/types';
 import { formatCategoryName, getConfidenceBadgeClass } from '@/lib/utils';
-import { ArrowLeft, Camera, Music, Video, ShieldAlert, Folder } from 'lucide-react';
+import { ArrowLeft, Camera, Music, Video, ShieldAlert, Folder, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ArtistDetailPage() {
@@ -49,16 +49,17 @@ export default function ArtistDetailPage() {
     <div className="flex-1 flex flex-col min-h-full">
       <Header
         title={`Artist Dossier: ${artistId}`}
-        subtitle="Complete evidence breakdown, profile claims, and demonstrated portfolio media."
+        subtitle="Independent capability evaluation, physical portfolio citations, and self-reported profile statements."
         badge={artist ? `${artist.confidence} Confidence` : undefined}
+        phaseTag="DOSSIER VIEW"
       />
 
-      <div className="p-8 space-y-6 max-w-7xl">
+      <div className="p-6 md:p-8 space-y-6 max-w-7xl">
         <Link
           href="/artists"
-          className="inline-flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-slate-200 transition mb-2"
+          className="inline-flex items-center gap-2 text-xs font-mono text-text-muted hover:text-text-primary transition-colors mb-2"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Artists Explorer
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Artists Directory
         </Link>
 
         {loading && <LoadingState message={`Fetching intelligence dossier for ${artistId}...`} isColdStart={isColdStart} />}
@@ -72,47 +73,52 @@ export default function ArtistDetailPage() {
         )}
 
         {!loading && !error && artist && (
-          <div className="space-y-6">
+          <div className="space-y-8 animate-revealUp">
             {/* Identity & Metadata Banner */}
-            <div className="p-6 rounded-2xl bg-surface-200/80 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-brand-blue bg-brand-blue/10 px-2 py-0.5 rounded border border-brand-blue/20">
+            <div className="p-6 rounded-xl bg-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-mono text-xs font-bold text-accent-primary bg-accent-primary/10 px-2 py-0.5 rounded border border-accent-primary/25">
                     {artist.artist_id}
                   </span>
-                  <span className="text-xs font-mono text-slate-400">
+                  <span className="text-xs font-mono text-text-muted">
                     Category: {formatCategoryName(artist.category)}
                   </span>
+                  <span className="text-xs font-mono text-text-muted">
+                    • Status: {artist.identifier_status}
+                  </span>
                 </div>
-                <h1 className="text-2xl font-bold text-white mt-1">
+                <h2 className="text-2xl md:text-3xl font-bold text-text-primary tracking-tight">
                   {artist.declared_name || artist.source_folder_name}
-                </h1>
-                <div className="flex items-center gap-2 text-xs text-slate-400 font-mono mt-1">
-                  <Folder className="w-3.5 h-3.5 text-slate-500" />
+                </h2>
+                <div className="flex items-center gap-2 text-xs text-text-muted font-mono pt-1">
+                  <Folder className="w-3.5 h-3.5 text-text-muted shrink-0" />
                   <span>Raw Folder: {artist.source_folder_name}</span>
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-1.5">
-                <span className={`text-xs font-mono px-3 py-1 rounded-full border ${getConfidenceBadgeClass(artist.confidence)}`}>
+              <div className="flex flex-col md:items-end gap-2 shrink-0">
+                <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full border ${getConfidenceBadgeClass(artist.confidence)}`}>
                   {artist.confidence} OVERALL CONFIDENCE
                 </span>
-                <span className="text-[11px] font-mono text-slate-400">
-                  Identifier: {artist.identifier_status}
+                <span className="text-[11px] font-mono text-text-muted">
+                  Deterministic ID Match
                 </span>
               </div>
             </div>
 
             {/* Documented Anomaly Banner if present */}
             {artist.discrepancies_and_anomalies && artist.discrepancies_and_anomalies.length > 0 && (
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1.5">
-                <div className="flex items-center gap-2 text-amber-400 font-semibold">
-                  <ShieldAlert className="w-4 h-4" />
-                  <span>Documented Anomaly / Discrepancy Note:</span>
+              <div className="p-4 rounded-xl bg-accent-amber/10 border border-accent-amber/25 text-xs space-y-2">
+                <div className="flex items-center gap-2 text-accent-amber font-semibold">
+                  <ShieldAlert className="w-4 h-4 shrink-0" />
+                  <span>Preserved Anomaly Note:</span>
                 </div>
-                <ul className="list-disc list-inside text-slate-300 font-mono space-y-0.5 text-[11px]">
+                <ul className="list-disc list-inside text-text-secondary font-mono space-y-1 text-[11px]">
                   {artist.discrepancies_and_anomalies.map((disc, idx) => (
-                    <li key={idx}>{disc}</li>
+                    <li key={idx} className="leading-relaxed">
+                      {disc}
+                    </li>
                   ))}
                 </ul>
               </div>

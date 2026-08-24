@@ -7,7 +7,7 @@ import { LoadingState } from '@/components/ui/LoadingState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { api, ApiError } from '@/lib/api';
 import { HirerBriefSummary } from '@/lib/types';
-import { FileText, Sparkles } from 'lucide-react';
+import { FileText, Sparkles, ArrowRight, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HirersPage() {
@@ -41,30 +41,33 @@ export default function HirersPage() {
   return (
     <div className="flex-1 flex flex-col min-h-full">
       <Header
-        title="Hirer Intent & Brief Explorer"
-        subtitle="Structured requirements, hard constraints, and context from real hirer conversations."
-        badge="4 Briefs + 1 Follow-Up"
+        title="Hirer Intent & Briefs Explorer"
+        subtitle="Operational requirements, hard limits, and verbatim quotes extracted from real hirer conversations across WhatsApp, Email, and Phone notes."
+        phaseTag="PHASE 4 ARTIFACT"
       />
 
-      <div className="p-8 space-y-6 max-w-7xl">
-        {/* Quick link to follow up */}
-        <div className="p-4 rounded-xl bg-gradient-to-r from-brand-indigo/20 via-surface-200 to-surface-200 border border-brand-indigo/30 flex items-center justify-between">
+      <div className="p-6 md:p-8 space-y-6 max-w-7xl">
+        {/* Dynamic Follow-Up Update Spotlight */}
+        <div className="p-5 rounded-xl bg-surface border border-accent-indigo/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-brand-indigo/10 text-brand-indigo">
-              <Sparkles className="w-4 h-4" />
+            <div className="p-2.5 rounded-lg bg-accent-indigo/10 text-accent-indigo border border-accent-indigo/20 shrink-0">
+              <RefreshCw className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-semibold text-white">Dynamic Follow-Up Re-Ranking Available</h4>
-              <p className="text-[11px] text-slate-400">
-                Brief 01 (Rhea Cafe Music) contains a follow-up requirement update.
+              <h3 className="text-sm font-bold text-text-primary">
+                Follow-Up Requirement Update Tracked
+              </h3>
+              <p className="text-xs text-text-secondary mt-0.5">
+                Brief 01 (Cafe Music WhatsApp) contains a downstream requirement change from ambient cafe background to an upbeat launch night set.
               </p>
             </div>
           </div>
           <Link
             href="/reranking"
-            className="px-3 py-1.5 rounded-lg bg-brand-indigo hover:bg-brand-indigo/80 text-white text-xs font-medium transition"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-accent-indigo text-white text-xs font-semibold hover:bg-accent-indigo/90 transition shadow-sm shrink-0 self-start sm:self-auto"
           >
-            View Re-Ranking
+            <span>View Re-Ranking Analysis</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -79,7 +82,7 @@ export default function HirersPage() {
         )}
 
         {!loading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 animate-revealUp">
             {briefs.map((brief) => (
               <BriefCard key={brief.brief_id} brief={brief} />
             ))}

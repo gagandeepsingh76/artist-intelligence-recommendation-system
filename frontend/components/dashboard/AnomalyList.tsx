@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, FolderGit2, ShieldAlert } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { DetectedAnomalyGroup } from '@/lib/types';
 
@@ -14,43 +14,60 @@ export function AnomalyList({ anomalies }: AnomalyListProps) {
   }
 
   return (
-    <div className="p-6 rounded-2xl bg-surface-200/50 border border-slate-800 space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-brand-amber" />
-          <span>Documented Dataset & Identifier Anomalies ({anomalies.length})</span>
-        </h3>
-        <span className="text-[11px] text-slate-400 font-mono">Preserved Factual Inconsistencies</span>
+    <div id="anomalies" className="p-6 rounded-xl bg-surface border border-border-subtle space-y-5 animate-revealUp">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-border-subtle">
+        <div>
+          <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 text-accent-amber" />
+            <span>Preserved Dataset & Identifier Anomalies ({anomalies.length})</span>
+          </h2>
+          <p className="text-xs text-text-muted mt-0.5">
+            Factual inconsistencies discovered during inventory (e.g. typos, ID collisions, mislabelled folders) preserved with canonical resolutions.
+          </p>
+        </div>
+        <span className="font-mono text-[10px] text-accent-amber px-2.5 py-1 rounded bg-accent-amber/10 border border-accent-amber/25 self-start sm:self-auto">
+          ZERO DATA LOSS POLICY
+        </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {anomalies.map((a, idx) => (
           <div
             key={a.artist_folder || idx}
-            className="p-4 rounded-xl bg-surface-300/80 border border-slate-800 hover:border-slate-700 transition space-y-2"
+            className="p-4 rounded-lg bg-surface-subtle border border-border-subtle hover:border-border-strong transition-colors space-y-2.5 flex flex-col justify-between"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Badge variant="amber">{a.artist_folder}</Badge>
-                <span className="text-xs font-mono text-slate-400 capitalize">{a.category}</span>
+            <div>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Badge variant="amber">{a.artist_folder}</Badge>
+                  <span className="text-xs font-mono text-text-muted capitalize">
+                    {a.category?.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-text-muted">
+                  {a.anomalies?.length || 0} {a.anomalies?.length === 1 ? 'discrepancy' : 'discrepancies'}
+                </span>
               </div>
-              <span className="text-[10px] font-mono text-slate-500">
-                {a.anomalies?.length || 0} {a.anomalies?.length === 1 ? 'Anomaly' : 'Anomalies'}
-              </span>
+
+              {a.anomalies && a.anomalies.length > 0 && (
+                <ul className="mt-2.5 space-y-1.5 text-xs text-text-secondary font-mono text-[11px]">
+                  {a.anomalies.map((msg, mIdx) => (
+                    <li key={mIdx} className="flex items-start gap-2 leading-relaxed">
+                      <span className="text-accent-amber shrink-0 mt-0.5">•</span>
+                      <span>{msg}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            {a.anomalies && a.anomalies.length > 0 && (
-              <ul className="list-disc list-inside text-xs text-slate-300 space-y-1 font-mono text-[11px] pt-1">
-                {a.anomalies.map((msg, mIdx) => (
-                  <li key={mIdx} className="leading-relaxed">
-                    {msg}
-                  </li>
-                ))}
-              </ul>
-            )}
+
+            <div className="pt-2 border-t border-border-subtle/70 text-[10px] font-mono text-text-muted flex items-center justify-between">
+              <span>Status: Preserved in Inventory</span>
+              <span>Canonical Resolved</span>
+            </div>
           </div>
         ))}
       </div>
     </div>
   );
 }
-
