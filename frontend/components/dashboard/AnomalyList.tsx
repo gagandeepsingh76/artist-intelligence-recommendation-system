@@ -1,17 +1,11 @@
 'use client';
 
-import { AlertTriangle, FileCode } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
+import { DetectedAnomalyGroup } from '@/lib/types';
 
 interface AnomalyListProps {
-  anomalies: Array<{
-    anomaly_id: string;
-    entity_id: string;
-    anomaly_type: string;
-    description: string;
-    evidence: string;
-    canonical_resolution: string;
-  }>;
+  anomalies?: DetectedAnomalyGroup[];
 }
 
 export function AnomalyList({ anomalies }: AnomalyListProps) {
@@ -29,26 +23,34 @@ export function AnomalyList({ anomalies }: AnomalyListProps) {
         <span className="text-[11px] text-slate-400 font-mono">Preserved Factual Inconsistencies</span>
       </div>
 
-      <div className="space-y-2.5">
-        {anomalies.map((a) => (
+      <div className="space-y-3">
+        {anomalies.map((a, idx) => (
           <div
-            key={a.anomaly_id}
-            className="p-3.5 rounded-xl bg-surface-300/80 border border-slate-800 hover:border-slate-700 transition space-y-1.5"
+            key={a.artist_folder || idx}
+            className="p-4 rounded-xl bg-surface-300/80 border border-slate-800 hover:border-slate-700 transition space-y-2"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Badge variant="amber">{a.entity_id}</Badge>
-                <span className="text-xs font-semibold text-slate-200">{a.anomaly_type.replace(/_/g, ' ')}</span>
+                <Badge variant="amber">{a.artist_folder}</Badge>
+                <span className="text-xs font-mono text-slate-400 capitalize">{a.category}</span>
               </div>
-              <span className="text-[10px] font-mono text-slate-400">{a.anomaly_id}</span>
+              <span className="text-[10px] font-mono text-slate-500">
+                {a.anomalies?.length || 0} {a.anomalies?.length === 1 ? 'Anomaly' : 'Anomalies'}
+              </span>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">{a.description}</p>
-            <div className="text-[11px] text-slate-400 font-mono bg-surface-400/60 p-2 rounded-lg border border-slate-800/60">
-              <span className="text-slate-400">Resolution:</span> {a.canonical_resolution}
-            </div>
+            {a.anomalies && a.anomalies.length > 0 && (
+              <ul className="list-disc list-inside text-xs text-slate-300 space-y-1 font-mono text-[11px] pt-1">
+                {a.anomalies.map((msg, mIdx) => (
+                  <li key={mIdx} className="leading-relaxed">
+                    {msg}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))}
       </div>
     </div>
   );
 }
+

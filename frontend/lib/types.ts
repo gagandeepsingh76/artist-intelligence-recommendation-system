@@ -15,6 +15,12 @@ export interface SystemStatus {
   all_artifacts_ready: boolean;
 }
 
+export interface DetectedAnomalyGroup {
+  artist_folder: string;
+  category: string;
+  anomalies: string[];
+}
+
 export interface DatasetSummary {
   dataset_version: string;
   total_files: number;
@@ -24,14 +30,7 @@ export interface DatasetSummary {
   total_follow_ups: number;
   total_media_files: number;
   detected_anomalies_count: number;
-  detected_anomalies: Array<{
-    anomaly_id: string;
-    entity_id: string;
-    anomaly_type: string;
-    description: string;
-    evidence: string;
-    canonical_resolution: string;
-  }>;
+  detected_anomalies: DetectedAnomalyGroup[];
   artifacts_status: Record<string, string>;
 }
 
