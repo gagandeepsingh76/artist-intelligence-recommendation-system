@@ -1,10 +1,11 @@
 'use client';
 
-import { Trophy, Medal, CheckCircle2, Film, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Trophy, Medal, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { CandidateRecommendation } from '@/lib/types';
 import { formatCategoryName, getConfidenceBadgeClass } from '@/lib/utils';
 import { Badge } from '@/components/ui/Badge';
+import { MediaEvidenceCard } from '@/components/media/MediaEvidenceCard';
 
 interface TopTwoComparisonProps {
   topTwo: [CandidateRecommendation, CandidateRecommendation];
@@ -68,23 +69,15 @@ export function TopTwoComparison({ topTwo }: TopTwoComparisonProps) {
             </div>
           </div>
 
-          {/* Supporting Media Citations */}
+          {/* Supporting Technical Media Citations */}
           {rank1.supporting_evidence && rank1.supporting_evidence.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <span className="text-[11px] font-mono font-bold text-text-muted uppercase tracking-wider block">
                 Direct Portfolio Citations ({rank1.supporting_evidence.length}):
               </span>
-              <div className="space-y-1.5">
+              <div className="space-y-2.5">
                 {rank1.supporting_evidence.map((cit) => (
-                  <div
-                    key={cit.evidence_id}
-                    className="p-2.5 rounded-lg bg-surface-subtle border border-border-subtle text-[11px] font-mono text-text-secondary flex items-center justify-between gap-2"
-                  >
-                    <span className="flex items-center gap-1.5 text-accent-indigo truncate">
-                      <Film className="w-3.5 h-3.5 shrink-0 text-text-muted" /> {cit.file_name}
-                    </span>
-                    <span className="text-text-muted shrink-0">{cit.timestamp_or_frame}</span>
-                  </div>
+                  <MediaEvidenceCard key={cit.evidence_id} citation={cit} />
                 ))}
               </div>
             </div>
@@ -176,23 +169,15 @@ export function TopTwoComparison({ topTwo }: TopTwoComparisonProps) {
             </div>
           </div>
 
-          {/* Supporting Media Citations */}
+          {/* Supporting Technical Media Citations */}
           {rank2.supporting_evidence && rank2.supporting_evidence.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <span className="text-[11px] font-mono font-bold text-text-muted uppercase tracking-wider block">
                 Direct Portfolio Citations ({rank2.supporting_evidence.length}):
               </span>
-              <div className="space-y-1.5">
+              <div className="space-y-2.5">
                 {rank2.supporting_evidence.map((cit) => (
-                  <div
-                    key={cit.evidence_id}
-                    className="p-2.5 rounded-lg bg-surface-subtle border border-border-subtle text-[11px] font-mono text-text-secondary flex items-center justify-between gap-2"
-                  >
-                    <span className="flex items-center gap-1.5 text-accent-indigo truncate">
-                      <Film className="w-3.5 h-3.5 shrink-0 text-text-muted" /> {cit.file_name}
-                    </span>
-                    <span className="text-text-muted shrink-0">{cit.timestamp_or_frame}</span>
-                  </div>
+                  <MediaEvidenceCard key={cit.evidence_id} citation={cit} />
                 ))}
               </div>
             </div>

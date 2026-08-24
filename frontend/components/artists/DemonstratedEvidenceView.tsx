@@ -1,8 +1,9 @@
 'use client';
 
-import { CheckCircle2, FileText, Film, Image as ImageIcon, Music, HelpCircle, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, FileText, HelpCircle, ShieldCheck } from 'lucide-react';
 import { DemonstratedCapability, ProfileClaim, UnknownCapability } from '@/lib/types';
 import { Badge } from '@/components/ui/Badge';
+import { MediaEvidenceCard } from '@/components/media/MediaEvidenceCard';
 
 interface DemonstratedEvidenceViewProps {
   demonstratedCapabilities: DemonstratedCapability[];
@@ -29,7 +30,7 @@ export function DemonstratedEvidenceView({
           <Badge variant="indigo">PHYSICAL MEDIA EVIDENCE CITATIONS</Badge>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {demonstratedCapabilities.map((cap) => (
             <div
               key={cap.capability_id}
@@ -51,43 +52,16 @@ export function DemonstratedEvidenceView({
 
               <p className="text-sm text-text-primary leading-relaxed">{cap.description}</p>
 
-              {/* Direct Media Citations */}
+              {/* Technical Media Citations */}
               {cap.evidence_citations && cap.evidence_citations.length > 0 && (
                 <div className="pt-4 border-t border-border-subtle space-y-3">
                   <span className="text-[11px] font-mono font-bold text-text-muted uppercase tracking-wider block">
-                    Observed Portfolio Assets ({cap.evidence_citations.length}):
+                    Observed Portfolio Media Assets ({cap.evidence_citations.length}):
                   </span>
 
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-3.5">
                     {cap.evidence_citations.map((cit) => (
-                      <div
-                        key={cit.evidence_id}
-                        className="p-4 rounded-lg bg-surface-subtle border border-border-subtle text-xs space-y-2"
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-text-secondary">
-                          <span className="font-mono text-accent-indigo font-bold flex items-center gap-1.5 break-all">
-                            <Film className="w-3.5 h-3.5 text-text-muted shrink-0" /> {cit.file_name}
-                          </span>
-                          <span className="font-mono text-[11px] text-text-muted shrink-0 bg-surface px-2 py-0.5 rounded border border-border-subtle">
-                            {cit.timestamp_or_frame}
-                          </span>
-                        </div>
-
-                        <p className="text-text-secondary text-xs leading-relaxed">{cit.citation_text}</p>
-
-                        {cit.observed_features && cit.observed_features.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 pt-1">
-                            {cit.observed_features.map((feat, idx) => (
-                              <span
-                                key={idx}
-                                className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface text-text-secondary border border-border-subtle"
-                              >
-                                {feat}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                      <MediaEvidenceCard key={cit.evidence_id} citation={cit} />
                     ))}
                   </div>
                 </div>
