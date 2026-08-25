@@ -53,5 +53,12 @@ AI-generated code and structured outputs were **never accepted blindly**. Every 
 
 ---
 
-## 5. Summary Statement
+## 5. Media Intelligence & Semantic Annotation Disclosure
+- **Physical Media Extraction:** Programmatic inspection is strictly limited to verifiable technical metadata (Pillow image dimensions, aspect ratio, color mode, resolution tiers; audio/video container format, file existence, and byte size).
+- **Semantic Portfolio Annotations:** High-level creative capability assessments (such as "two-part vocal harmony", "controlled cosmetic specular reflections", "snappy 9:16 short-form reel pacing") were authored by a human reviewer through manual inspection of the raw portfolio files and externalized into `data/processed/artist_capability_annotations.json`.
+- **No Black-Box ML Claims:** We explicitly disclaim using computer vision or speech-to-text ML models for runtime feature extraction. The pipeline reads structured human-reviewed observations and validates them deterministically against real media files on disk.
+
+---
+
+## 6. Summary Statement
 AI served as an accelerator for code authoring, type definition, and test construction. The core domain logic, scoring transparency, evidence verification, and artifact contracts were governed by deterministic code and verified through automated test suites.

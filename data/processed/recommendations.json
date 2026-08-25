@@ -16,7 +16,7 @@
           "artist_id": "M01",
           "artist_name": "Meera & Arjun Acoustic duo | Delhi NCR",
           "category": "musician",
-          "fit_reason": "Meera & Arjun rank #1 due to demonstrated live acoustic duo recordings in cafe settings (MA_cafe_demo_take1.wav), clean two-part vocal harmonies across English/Hindi repertoire, and minimal acoustic footprint under ₹9k.",
+          "fit_reason": "Meera & Arjun Acoustic duo | Delhi NCR ranks #1 — Demonstrated capability in: ambient background suitability, acoustic live performance, vocal capability and repertoire. (Score: 88.0/100, Confidence: HIGH). Match Score 88.0/100 [Req Fit: 50.0/50, Evidence: 18.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 3 requirements, 0 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_CAFE_01",
@@ -178,8 +178,7 @@
           ],
           "confidence": "HIGH",
           "trade_offs": [
-            "Two-performer setup requires slightly more physical space than a solo act",
-            "Venue PA availability remains unknown"
+            "Evidence confidence: HIGH"
           ],
           "uncertainty_and_limitations": []
         },
@@ -188,7 +187,7 @@
           "artist_id": "M03",
           "artist_name": "Raghav Sen",
           "category": "musician",
-          "fit_reason": "Raghav Sen ranks #2 with intimate solo acoustic guitar fingerpicking and mellow vocals (folk_acoustic-summer-walk.mp3), ideal for unobtrusive conversation, though limited strictly to slow/somber ballads.",
+          "fit_reason": "Raghav Sen ranks #2 — Demonstrated capability in: ambient background suitability, acoustic live performance, vocal capability and repertoire. (Score: 88.0/100, Confidence: HIGH). Match Score 88.0/100 [Req Fit: 50.0/50, Evidence: 18.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 3 requirements, 0 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_CAFE_01",
@@ -342,26 +341,19 @@
           ],
           "confidence": "HIGH",
           "trade_offs": [
-            "Repertoire is strictly downtempo acoustic folk ballads without demonstrated upbeat dynamic range",
-            "Solo acoustic act"
+            "Evidence confidence: HIGH"
           ],
           "uncertainty_and_limitations": [
-            "Portfolio contains only slow downtempo ballads; no upbeat energetic headline set evidence"
+            "Portfolio contains only slow downtempo ballads; no upbeat energetic headline set evidence demonstrated"
           ]
         }
       ],
       "trade_off_analysis": [
         {
-          "dimension": "vocal_harmonies_and_repertoire",
-          "rank_1_status": "Meera & Arjun offer demonstrated dual vocal harmonies and dynamic bilingual versatility",
-          "rank_2_status": "Raghav Sen offers intimate solo acoustic ballads with soft, contemplative vocal delivery",
-          "decision_implication": "Rank 1 provides richer musical depth and energetic flexibility; Rank 2 provides a more subdued, purely acoustic background feel"
-        },
-        {
-          "dimension": "stage_footprint_and_setup",
-          "rank_1_status": "Duo setup requiring two performers and minimal floor space",
-          "rank_2_status": "Solo guitarist requiring ultra-minimal footprint",
-          "decision_implication": "Rank 2 has an even smaller physical footprint if cafe seating is extremely cramped"
+          "dimension": "overall_score",
+          "rank_1_status": "Score: 88.0/100 (HIGH confidence)",
+          "rank_2_status": "Score: 88.0/100 (HIGH confidence)",
+          "decision_implication": "Rank 1 scores 0.0 points lower overall. Both candidates have similar evidence profiles on the key dimensions."
         }
       ],
       "assumptions_made": [
@@ -374,15 +366,15 @@
       "refinement_questions": [
         {
           "question_id": "Q1",
-          "question_text": "Will the cafe provide a functioning PA system/vocal amplifier, or must the musician bring a self-amplified portable acoustic rig?",
-          "why_it_matters": "Resolves UKN_CAFE_01 regarding audio equipment readiness.",
-          "potential_ranking_impact": "If no PA is available, prioritizes acts with self-contained portable amplification."
+          "question_text": "Regarding 'PA system / speaker availability and live performance capability': If cafe PA is unusable, candidate must bring self-amplified acoustic gear (e.g. portable acoustic amplifier) Can this be clarified before artist selection?",
+          "why_it_matters": "If cafe PA is unusable, candidate must bring self-amplified acoustic gear (e.g. portable acoustic amplifier)",
+          "potential_ranking_impact": "Resolves UKN_CAFE_01 — this unknown is decision-critical and could alter candidate ranking or eliminate a candidate if resolved."
         },
         {
           "question_id": "Q2",
-          "question_text": "What proportion of Hindi vs English contemporary songs is preferred for the Friday evening crowd?",
-          "why_it_matters": "Clarifies audience musical preference and repertoire alignment.",
-          "potential_ranking_impact": "Favors bilingual dual-vocal repertoire (M01) vs indie folk acoustic solo (M03)."
+          "question_text": "Regarding 'Exact cafe seating capacity and ambient room acoustics': Affects whether a solo guitarist or duo harmonic act is better balanced for the room Can this be clarified before artist selection?",
+          "why_it_matters": "Affects whether a solo guitarist or duo harmonic act is better balanced for the room",
+          "potential_ranking_impact": "Resolves UKN_CAFE_02 — this unknown is relevant and could alter candidate ranking or eliminate a candidate if resolved."
         }
       ]
     },
@@ -396,7 +388,7 @@
           "artist_id": "P02",
           "artist_name": "Kabir Mehta",
           "category": "photographer",
-          "fit_reason": "Kabir Mehta ranks #1 with verified commercial product and cosmetic bottle photography demonstrating controlled specular reflections and clean textures, based locally in Gurugram for rapid 2-day turnaround.",
+          "fit_reason": "Kabir Mehta ranks #1 — Demonstrated capability in: product commercial photography, product commercial photography, turnaround and digital delivery. (Score: 92.0/100, Confidence: HIGH). Match Score 92.0/100 [Req Fit: 50.0/50, Evidence: 22.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 4 requirements, 0 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_SKIN_01",
@@ -589,11 +581,10 @@
           ],
           "confidence": "HIGH",
           "trade_offs": [
-            "Commercial usage rights scope must be confirmed with marketing",
-            "Studio space not provided (must shoot on-location)"
+            "Evidence confidence: MEDIUM"
           ],
           "uncertainty_and_limitations": [
-            "Portfolio focuses on controlled commercial/fashion setups rather than dynamic live event offsites",
+            "Portfolio focuses on controlled commercial/fashion setups rather than dynamic live event offsites or candid workshop storytelling",
             "No large corporate team group photos in portfolio"
           ]
         },
@@ -602,7 +593,7 @@
           "artist_id": "PO5",
           "artist_name": "Frames",
           "category": "photographer",
-          "fit_reason": "Frames ranks #2 with high-resolution DSLR commercial product and architectural detail, though based in Kolkata requiring travel and logistics confirmation for Gurgaon.",
+          "fit_reason": "Frames ranks #2 — Demonstrated capability in: product commercial photography, product commercial photography, product commercial photography. UNKNOWN evidence on: turnaround and digital delivery. (Score: 64.0/100, Confidence: HIGH). Match Score 64.0/100 [Req Fit: 32.0/50, Evidence: 12.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 3 requirements, 1 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_SKIN_01",
@@ -764,26 +755,20 @@
           ],
           "confidence": "HIGH",
           "trade_offs": [
-            "Based in Kolkata, introducing travel and remote file coordination risk",
-            "Identifier collision in source profile docx (P04 / Frames)"
+            "UNKNOWN evidence on 'Turnaround And Digital Delivery' required by this brief.",
+            "Dataset anomaly noted: Folder uses letter 'O' instead of digit '0' in identifier 'PO5'"
           ],
           "uncertainty_and_limitations": [
-            "Artist based in Kolkata; local same-evening digital delivery logistics in Delhi unverified"
+            "Artist based in Kolkata; local same-evening digital delivery in Delhi/NCR unverified and dependent on travel confirmation"
           ]
         }
       ],
       "trade_off_analysis": [
         {
-          "dimension": "commercial_product_focus",
-          "rank_1_status": "Kabir Mehta directly demonstrates commercial cosmetic bottle and packaging photography with controlled specular reflections",
-          "rank_2_status": "Frames demonstrates ultra-high resolution DSLR product and architectural captures with crisp edge-to-edge sensor detail",
-          "decision_implication": "Rank 1 has specialized tabletop bottle/jar lighting samples; Rank 2 offers higher raw sensor resolution"
-        },
-        {
-          "dimension": "geographic_proximity_and_turnaround",
-          "rank_1_status": "Based locally in Gurugram (hirer's preferred location) supporting rapid 2-day selects delivery",
-          "rank_2_status": "Based in Kolkata, introducing travel coordination and potential shipping/delivery friction",
-          "decision_implication": "Rank 1 minimizes logistical and turnaround risk for the accelerated launch deadline"
+          "dimension": "turnaround_and_digital_delivery",
+          "rank_1_status": "DEMONSTRATED (MODERATE): Digital commercial web crops and clean color grading",
+          "rank_2_status": "UNKNOWN - no evidence in portfolio",
+          "decision_implication": "Rank 1 has stronger demonstrated capability on 'Turnaround & Social/Digital Readiness'. Rank 2 is a viable fallback but carries higher uncertainty on this requirement."
         }
       ],
       "assumptions_made": [
@@ -796,15 +781,15 @@
       "refinement_questions": [
         {
           "question_id": "Q1",
-          "question_text": "Is the on-location shoot taking place in Gurgaon or Delhi, and will products be delivered to the photographer or shot on-site?",
-          "why_it_matters": "Resolves venue access, lighting setup logistics, and 2-day turnaround feasibility.",
-          "potential_ranking_impact": "Strongly favors local Gurugram photographer (P02) over regional candidates."
+          "question_text": "Regarding 'Full commercial advertising usage rights vs organic social/web only': If extended commercial billboard/print rights are required, licensing fees may exceed ₹18k Can this be clarified before artist selection?",
+          "why_it_matters": "If extended commercial billboard/print rights are required, licensing fees may exceed ₹18k",
+          "potential_ranking_impact": "Resolves UKN_SKIN_01 — this unknown is relevant and could alter candidate ranking or eliminate a candidate if resolved."
         },
         {
           "question_id": "Q2",
-          "question_text": "Will a hand model be confirmed for the shoot, or should lighting and framing be optimized strictly for tabletop bottle/jar packshots?",
-          "why_it_matters": "Resolves tentative model scope vs pure product macro framing.",
-          "potential_ranking_impact": "Clarifies model retouching requirements and shoot duration."
+          "question_text": "Regarding 'Confirmation whether hand model will participate in shoot': Hand shots require skin retouching and model coordination Can this be clarified before artist selection?",
+          "why_it_matters": "Hand shots require skin retouching and model coordination",
+          "potential_ranking_impact": "Resolves UKN_SKIN_02 — this unknown is relevant and could alter candidate ranking or eliminate a candidate if resolved."
         }
       ]
     },
@@ -818,7 +803,7 @@
           "artist_id": "V01",
           "artist_name": "Nisha Kapoor",
           "category": "video_editor",
-          "fit_reason": "Nisha Kapoor ranks #1 with demonstrated 9:16 vertical short-form reels, appetizing food prep and customer reaction montage sequencing, and synchronized on-screen dialogue subtitles.",
+          "fit_reason": "Nisha Kapoor ranks #1 — Demonstrated capability in: vertical short form editing, narrative curation from raw clips, pacing and energy control. (Score: 94.0/100, Confidence: HIGH). Match Score 94.0/100 [Req Fit: 50.0/50, Evidence: 24.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 4 requirements, 0 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_VID_01",
@@ -1021,8 +1006,7 @@
           ],
           "confidence": "HIGH",
           "trade_offs": [
-            "Turnaround constrained to Friday evening for first cut",
-            "Commercial music track selection may require alternative sourcing"
+            "Evidence confidence: HIGH"
           ],
           "uncertainty_and_limitations": []
         },
@@ -1031,7 +1015,7 @@
           "artist_id": "V03",
           "artist_name": "Tara D'Souza",
           "category": "video_editor",
-          "fit_reason": "Tara D'Souza (V03) ranks #2 with demonstrated cinematic lifestyle and travel montages with rich color grading and rhythmic music pacing, though speech captioning overlays are unverified in samples.",
+          "fit_reason": "Tara D'Souza ranks #2 — Demonstrated capability in: vertical short form editing, narrative curation from raw clips, pacing and energy control. UNKNOWN evidence on: speech captioning and subtitles. (Score: 75.5/100, Confidence: HIGH). Match Score 75.5/100 [Req Fit: 39.5/50, Evidence: 16.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 3 requirements, 1 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_VID_01",
@@ -1193,26 +1177,20 @@
           ],
           "confidence": "HIGH",
           "trade_offs": [
-            "Dialogue speech captioning was not demonstrated in portfolio clips",
-            "Profile name mismatch (Folder: Rahul Gupta / Profile: Tara D'Souza)"
+            "UNKNOWN evidence on 'Speech Captioning And Subtitles' required by this brief.",
+            "Dataset anomaly noted: Profile docx declares 'V03 / Tara D'Souza' (Name mismatch with folder 'Rahul_Gupta')"
           ],
           "uncertainty_and_limitations": [
-            "Focus is purely on music-led aesthetic b-roll without dialogue subtitle overlays"
+            "Focus is purely on music-led aesthetic b-roll without dialogue subtitle overlays; speech captioning undemonstrated"
           ]
         }
       ],
       "trade_off_analysis": [
         {
-          "dimension": "short_form_and_captioning",
-          "rank_1_status": "Nisha Kapoor demonstrates native 9:16 vertical short-form reels with synchronized kinetic dialogue subtitles",
-          "rank_2_status": "Tara D'Souza (V03) demonstrates cinematic lifestyle narrative montages with rich color grading but lacks speech subtitle overlays",
-          "decision_implication": "Rank 1 requires zero additional prompting for customer reaction subtitles and social reel pacing"
-        },
-        {
-          "dimension": "raw_footage_story_curation",
-          "rank_1_status": "Demonstrated experience curating multi-clip food prep and customer reaction montages",
-          "rank_2_status": "Demonstrated aesthetic rhythm and multi-clip visual storytelling",
-          "decision_implication": "Rank 1 offers proven narrative curation from high-volume unorganized raw phone clips"
+          "dimension": "speech_captioning_and_subtitles",
+          "rank_1_status": "DEMONSTRATED (STRONG): Synchronized on-screen kinetic and styled subtitles for spoken dialogue",
+          "rank_2_status": "UNKNOWN - no evidence in portfolio",
+          "decision_implication": "Rank 1 has stronger demonstrated capability on 'Speech Captioning & Subtitling'. Rank 2 is a viable fallback but carries higher uncertainty on this requirement."
         }
       ],
       "assumptions_made": [
@@ -1225,15 +1203,15 @@
       "refinement_questions": [
         {
           "question_id": "Q1",
-          "question_text": "Is the original event song cleared for commercial use on Instagram, or should the editor select and license royalty-free commercial music?",
-          "why_it_matters": "Resolves UKN_VID_01 regarding music copyright risk on social media.",
-          "potential_ranking_impact": "Requires editor with music curation capability (V01) to provide soundtrack alternatives."
+          "question_text": "Regarding 'Legal copyright clearance of the original event song on Instagram': If track is copyrighted, editor must source and cut to alternative royalty-free commercial audio Can this be clarified before artist selection?",
+          "why_it_matters": "If track is copyrighted, editor must source and cut to alternative royalty-free commercial audio",
+          "potential_ranking_impact": "Resolves UKN_VID_01 — this unknown is relevant and could alter candidate ranking or eliminate a candidate if resolved."
         },
         {
           "question_id": "Q2",
-          "question_text": "Are rough timestamps or transcripts available for the 3–4 customer reaction clips to accelerate subtitle synchronization by Friday?",
-          "why_it_matters": "Resolves audio clarity and caption timing efficiency from raw phone clips.",
-          "potential_ranking_impact": "Ensures Friday evening turnaround without delays from noisy phone audio."
+          "question_text": "Regarding 'Exact audio clarity and dialogue audibility in customer reaction clips': Affects time required for audio cleanup and caption timing Can this be clarified before artist selection?",
+          "why_it_matters": "Affects time required for audio cleanup and caption timing",
+          "potential_ranking_impact": "Resolves UKN_VID_02 — this unknown is relevant and could alter candidate ranking or eliminate a candidate if resolved."
         }
       ]
     },
@@ -1247,7 +1225,7 @@
           "artist_id": "P01",
           "artist_name": "Aanya Rao",
           "category": "photographer",
-          "fit_reason": "Aanya Rao ranks #1 with verified dynamic candid event storytelling across workshop and team day interactions in Delhi/NCR, avoiding stiff conference poses with same-evening LinkedIn digital turnaround.",
+          "fit_reason": "Aanya Rao ranks #1 — Demonstrated capability in: candid event coverage, group and team framing, turnaround and digital delivery. (Score: 83.3/100, Confidence: HIGH). Match Score 83.3/100 [Req Fit: 49.3/50, Evidence: 14.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 3 requirements, 0 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_LEAD_01",
@@ -1401,12 +1379,11 @@
           ],
           "confidence": "HIGH",
           "trade_offs": [
-            "Individual studio executive headshots are secondary to candid event coverage",
-            "Room lighting conditions and flash rules unconfirmed"
+            "Evidence confidence: MEDIUM"
           ],
           "uncertainty_and_limitations": [
             "No dedicated studio cosmetic or commercial product packaging samples in portfolio",
-            "No formal studio executive headshot setups in media"
+            "No formal studio executive headshot setups observed in media"
           ]
         },
         {
@@ -1414,7 +1391,7 @@
           "artist_id": "PO5",
           "artist_name": "Frames",
           "category": "photographer",
-          "fit_reason": "Frames ranks #2 with ultra-high resolution DSLR group framing suitable for a 120-person team photo, though based in Kolkata requiring travel confirmation for South Delhi.",
+          "fit_reason": "Frames ranks #2 — Demonstrated capability in: candid event coverage, group and team framing. UNKNOWN evidence on: turnaround and digital delivery. (Score: 60.0/100, Confidence: MEDIUM). Match Score 60.0/100 [Req Fit: 32.0/50, Evidence: 8.0/30, Constraints: 20.0/20, Penalty: 0.0]. Demonstrated 2 requirements, 1 dimensions UNKNOWN.",
           "matched_requirements": [
             {
               "requirement_id": "REQ_LEAD_01",
@@ -1537,26 +1514,20 @@
           ],
           "confidence": "MEDIUM",
           "trade_offs": [
-            "Based in Kolkata requiring travel to South Delhi",
-            "Same-evening digital select delivery requires on-site file transfer confirmation"
+            "UNKNOWN evidence on 'Turnaround And Digital Delivery' required by this brief.",
+            "Dataset anomaly noted: Folder uses letter 'O' instead of digit '0' in identifier 'PO5'"
           ],
           "uncertainty_and_limitations": [
-            "Artist based in Kolkata; local same-evening digital delivery logistics in Delhi unverified"
+            "Artist based in Kolkata; local same-evening digital delivery in Delhi/NCR unverified and dependent on travel confirmation"
           ]
         }
       ],
       "trade_off_analysis": [
         {
-          "dimension": "candid_event_storytelling",
-          "rank_1_status": "Aanya Rao demonstrates unposed candid interaction coverage in corporate workshops and team days in Delhi/NCR",
-          "rank_2_status": "Frames demonstrates high-resolution DSLR group framing and sharp architectural/portrait compositions",
-          "decision_implication": "Rank 1 specializes in unposed corporate workshop moments avoiding stiff conference shots; Rank 2 provides higher sensor resolution for large group prints"
-        },
-        {
-          "dimension": "turnaround_and_local_delivery",
-          "rank_1_status": "Local South Delhi presence guaranteeing reliable same-evening LinkedIn digital selects",
-          "rank_2_status": "Kolkata base requiring on-site travel coordination for same-evening file handover",
-          "decision_implication": "Rank 1 eliminates travel logistics risk for 4 September event in South Delhi"
+          "dimension": "turnaround_and_digital_delivery",
+          "rank_1_status": "DEMONSTRATED (MODERATE): Vertical/social format readiness for web and social distribution",
+          "rank_2_status": "UNKNOWN - no evidence in portfolio",
+          "decision_implication": "Rank 1 has stronger demonstrated capability on 'Turnaround & Social/Digital Readiness'. Rank 2 is a viable fallback but carries higher uncertainty on this requirement."
         }
       ],
       "assumptions_made": [
@@ -1570,15 +1541,15 @@
       "refinement_questions": [
         {
           "question_id": "Q1",
-          "question_text": "Does the South Delhi venue room have adequate natural lighting, or is bounced flash permitted for the candid workshop sessions?",
-          "why_it_matters": "Resolves UKN_LEAD_02 regarding indoor lighting rules and camera gear requirements.",
-          "potential_ranking_impact": "Favors photographers with proven high-ISO low-light event capability (P01)."
+          "question_text": "Regarding 'Budget ceiling and procurement commercial parameters': No budget was specified ('procurement will ask anyway') Can this be clarified before artist selection?",
+          "why_it_matters": "No budget was specified ('procurement will ask anyway')",
+          "potential_ranking_impact": "Resolves UKN_LEAD_01 — this unknown is decision-critical and could alter candidate ranking or eliminate a candidate if resolved."
         },
         {
           "question_id": "Q2",
-          "question_text": "Is there a procurement budget ceiling to guide candidate selection between local Delhi options and travel-inclusive packages?",
-          "why_it_matters": "Resolves UKN_LEAD_01 regarding budget parameters for procurement approval.",
-          "potential_ranking_impact": "Validates fee scope between local Delhi candidates and outstation options."
+          "question_text": "Regarding 'Venue room dimensions and flash photography permission': Governs lighting gear choices and group photo staging in South Delhi venue Can this be clarified before artist selection?",
+          "why_it_matters": "Governs lighting gear choices and group photo staging in South Delhi venue",
+          "potential_ranking_impact": "Resolves UKN_LEAD_02 — this unknown is decision-critical and could alter candidate ranking or eliminate a candidate if resolved."
         }
       ]
     }

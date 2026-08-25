@@ -53,10 +53,10 @@ To avoid black-box heuristics or uncalibrated LLM scoring, ranking is computed v
 $$\text{Total Score} = \text{Requirement Fit } (0\text{--}50) + \text{Evidence Strength } (0\text{--}30) + \text{Constraint Compatibility } (0\text{--}20) - \text{Conflict Penalty } (0\text{--}40)$$
 
 ### Score Deconstruction:
-- **Requirement Fit (0–50 pts):** Weighted capability coverage against hirer needs ($W_{\text{CRITICAL}} = 1.0$, $W_{\text{HIGH}} = 0.8$, $W_{\text{MEDIUM}} = 0.5$, $W_{\text{LOW}} = 0.3$).
-- **Evidence Strength (0–30 pts):** Direct empirical bonus for verified media evidence ($\text{STRONG} = 30$, $\text{MODERATE} = 20$, $\text{LIMITED} = 10$, $\text{CLAIM\_ONLY} = 6$).
-- **Constraint Compatibility (0–20 pts):** Alignment with operational parameters (geographic proximity, timeline turnaround feasibility, setup footprint).
-- **Conflict Penalties (0–40 pts):** Applied strictly to direct hard constraint violations (e.g., heavy metal band applied to quiet cafe background).
+- **Requirement Fit (0–50 pts):** Pro-rated requirement coverage ($\frac{50.0}{N_{\text{req}}}$ base per requirement) scaled by importance multipliers ($W_{\text{CRITICAL}} = 1.2$, $W_{\text{STANDARD}} = 1.0$, $W_{\text{LOW}} = 0.8$) and evidence demonstration scaling ($S_{\text{STRONG}} = 1.0$, $S_{\text{MODERATE}} = 0.8$, $S_{\text{LIMITED}} = 0.6$, $S_{\text{CLAIM}} = 0.4$, $S_{\text{UNKNOWN}} = 0.0$).
+- **Evidence Strength (0–30 pts):** Additive empirical bonus for verified media evidence per requirement ($+6.0\text{ pts}$ for $\text{STRONG}$, $+4.0\text{ pts}$ for $\text{MODERATE}$, $+2.0\text{ pts}$ for $\text{LIMITED}$, $+1.0\text{ pts}$ for $\text{CLAIM}$, $+0.0\text{ pts}$ for $\text{UNKNOWN}$), capped at $30.0\text{ pts}$ total.
+- **Constraint Compatibility (0–20 pts):** Baseline $20.0\text{ pts}$ for category and operational compatibility.
+- **Conflict Penalties (0–40 pts):** Applied strictly to direct hard constraint violations (e.g., $+35.0\text{ pts}$ penalty for heavy metal band applied to quiet cafe background).
 
 ---
 

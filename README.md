@@ -144,6 +144,10 @@ Open `http://localhost:3000` to interact with the visual intelligence console.
 
 ### Transparent Scoring Breakdown (0–100 Scale)
 $$\text{Total Score} = \text{Requirement Fit (0–50)} + \text{Evidence Strength (0–30)} + \text{Constraint Compatibility (0–20)} - \text{Conflict Penalty (0–40)}$$
+- **Requirement Fit (0–50 pts):** Base allocation per requirement ($\frac{50.0}{N_{\text{req}}}$) scaled by importance ($W_{\text{CRITICAL}} = 1.2$, $W_{\text{STD}} = 1.0$, $W_{\text{LOW}} = 0.8$) and demonstration level ($S_{\text{STRONG}} = 1.0$, $S_{\text{MOD}} = 0.8$, $S_{\text{LIM}} = 0.6$, $S_{\text{CLAIM}} = 0.4$, $S_{\text{UNKNOWN}} = 0.0$).
+- **Evidence Strength (0–30 pts):** Empirical bonus per verified media requirement ($+6\text{ pts}$ STRONG, $+4\text{ pts}$ MODERATE, $+2\text{ pts}$ LIMITED, $+1\text{ pt}$ CLAIM, $+0\text{ pts}$ UNKNOWN), capped at 30.
+- **Constraint Compatibility (0–20 pts):** Baseline 20.0 pts for category and format compatibility.
+- **Conflict Penalties (0–40 pts):** Dedicated penalties for direct hard constraint or operational clashes.
 
 ---
 

@@ -1,13 +1,17 @@
 """
 Trade-Off Analyzer.
 Generates structured comparative trade-offs between Rank 1 and Rank 2 recommendations
-based on demonstrated evidence, operational footprint, style, and uncertainties.
+by comparing their ScoreBreakdown objects against the brief requirements.
+
+Trade-offs are computed from score differentials and capability status comparisons.
+No artist IDs or brief IDs are hardcoded. Generalizes to any artist/brief pair.
 """
 
-from typing import List, Dict, Any
+from typing import List, Set, Dict, Any
 from src.models.recommendation import TradeOffItem
 from src.models.hirer import HirerBrief
 from src.matching.scorer import ScoreBreakdown
+from src.framework.capability_dimensions import get_dimensions_for_category
 
 
 def generate_trade_offs_for_brief(
@@ -16,81 +20,86 @@ def generate_trade_offs_for_brief(
     rank_2_score: ScoreBreakdown
 ) -> List[TradeOffItem]:
     """
-    Generates factual, evidence-backed trade-offs comparing Rank 1 and Rank 2.
+    Generates factual, evidence-backed trade-offs by comparing Rank 1 and Rank 2
+    on every dimension required by the brief.
+
+    A meaningful trade-off exists when one candidate has DEMONSTRATED_EVIDENCE and
+    the other does not. Trade-offs are computed from score breakdowns.
+    Generalized: works for any artist/brief pair without hardcoded IDs.
+    Returns up to 4 most differentiated trade-off dimensions.
     """
-    brief_id = brief.brief_id
     trade_offs: List[TradeOffItem] = []
 
-    if brief_id == "01_cafe_music_whatsapp":
-        trade_offs.append(
-            TradeOffItem(
-                dimension="vocal_harmonies_and_repertoire",
-                rank_1_status="Meera & Arjun offer demonstrated dual vocal harmonies and dynamic bilingual versatility",
-                rank_2_status="Raghav Sen offers intimate solo acoustic ballads with soft, contemplative vocal delivery",
-                decision_implication="Rank 1 provides richer musical depth and energetic flexibility; Rank 2 provides a more subdued, purely acoustic background feel"
-            )
-        )
-        trade_offs.append(
-            TradeOffItem(
-                dimension="stage_footprint_and_setup",
-                rank_1_status="Duo setup requiring two performers and minimal floor space",
-                rank_2_status="Solo guitarist requiring ultra-minimal footprint",
-                decision_implication="Rank 2 has an even smaller physical footprint if cafe seating is extremely cramped"
-            )
-        )
+    # Index capabilities by dimension for both candidates
+    r1_caps: Dict[str, Dict] = {m["dimension"]: m for m in rank_1_score.matched_capabilities}
+    r2_caps: Dict[str, Dict] = {m["dimension"]: m for m in rank_2_score.matched_capabilities}
 
-    elif brief_id == "02_skincare_photography_chat":
-        trade_offs.append(
-            TradeOffItem(
-                dimension="commercial_product_focus",
-                rank_1_status="Kabir Mehta directly demonstrates commercial cosmetic bottle and packaging photography with controlled specular reflections",
-                rank_2_status="Frames demonstrates ultra-high resolution DSLR product and architectural captures with crisp edge-to-edge sensor detail",
-                decision_implication="Rank 1 has specialized tabletop bottle/jar lighting samples; Rank 2 offers higher raw sensor resolution"
-            )
-        )
-        trade_offs.append(
-            TradeOffItem(
-                dimension="geographic_proximity_and_turnaround",
-                rank_1_status="Based locally in Gurugram (hirer's preferred location) supporting rapid 2-day selects delivery",
-                rank_2_status="Based in Kolkata, introducing travel coordination and potential shipping/delivery friction",
-                decision_implication="Rank 1 minimizes logistical and turnaround risk for the accelerated launch deadline"
-            )
-        )
+    r1_unknowns: Set[str] = set(rank_1_score.unmatched_unknowns)
+    r2_unknowns: Set[str] = set(rank_2_score.unmatched_unknowns)
 
-    elif brief_id == "03_vertical_video_email":
-        trade_offs.append(
-            TradeOffItem(
-                dimension="short_form_and_captioning",
-                rank_1_status="Nisha Kapoor demonstrates native 9:16 vertical short-form reels with synchronized kinetic dialogue subtitles",
-                rank_2_status="Tara D'Souza (V03) demonstrates cinematic lifestyle narrative montages with rich color grading but lacks speech subtitle overlays",
-                decision_implication="Rank 1 requires zero additional prompting for customer reaction subtitles and social reel pacing"
-            )
-        )
-        trade_offs.append(
-            TradeOffItem(
-                dimension="raw_footage_story_curation",
-                rank_1_status="Demonstrated experience curating multi-clip food prep and customer reaction montages",
-                rank_2_status="Demonstrated aesthetic rhythm and multi-clip visual storytelling",
-                decision_implication="Rank 1 offers proven narrative curation from high-volume unorganized raw phone clips"
-            )
-        )
+    dim_defs = get_dimensions_for_category(brief.target_category)
 
-    elif brief_id == "04_leadership_event_photos":
-        trade_offs.append(
-            TradeOffItem(
-                dimension="candid_event_storytelling",
-                rank_1_status="Aanya Rao demonstrates unposed candid interaction coverage in corporate workshops and team days in Delhi/NCR",
-                rank_2_status="Frames demonstrates high-resolution DSLR group framing and sharp architectural/portrait compositions",
-                decision_implication="Rank 1 specializes in unposed corporate workshop moments avoiding stiff conference shots; Rank 2 provides higher sensor resolution for large group prints"
-            )
-        )
-        trade_offs.append(
-            TradeOffItem(
-                dimension="turnaround_and_local_delivery",
-                rank_1_status="Local South Delhi presence guaranteeing reliable same-evening LinkedIn digital selects",
-                rank_2_status="Kolkata base requiring on-site travel coordination for same-evening file handover",
-                decision_implication="Rank 1 eliminates travel logistics risk for 4 September event in South Delhi"
-            )
-        )
+    def status_to_label(dim: str, caps: Dict, unknowns: Set) -> str:
+        if dim in caps:
+            cap = caps[dim]
+            status = cap.get("status", "UNKNOWN")
+            strength = cap.get("strength", "")
+            desc = cap.get("description", "")[:80]
+            if status == "DEMONSTRATED_EVIDENCE":
+                return "DEMONSTRATED ({}): {}".format(strength, desc)
+            elif status == "CLAIM":
+                return "CLAIMED (unverified): {}".format(desc)
+        if dim in unknowns:
+            return "UNKNOWN - no evidence in portfolio"
+        return "UNKNOWN"
+
+    for req in brief.known_requirements:
+        dim = req.dimension
+        r1_label = status_to_label(dim, r1_caps, r1_unknowns)
+        r2_label = status_to_label(dim, r2_caps, r2_unknowns)
+
+        r1_has_demo = dim in r1_caps and r1_caps[dim].get("status") == "DEMONSTRATED_EVIDENCE"
+        r2_has_demo = dim in r2_caps and r2_caps[dim].get("status") == "DEMONSTRATED_EVIDENCE"
+
+        if r1_has_demo == r2_has_demo:
+            continue
+
+        dim_def = dim_defs.get(dim)
+        dim_name = dim_def.display_name if dim_def else dim.replace("_", " ").title()
+
+        if r1_has_demo:
+            implication = (
+                "Rank 1 has stronger demonstrated capability on '{}'. "
+                "Rank 2 is a viable fallback but carries higher uncertainty on this requirement."
+            ).format(dim_name)
+        else:
+            implication = (
+                "Rank 2 has stronger demonstrated capability on '{}'. "
+                "Prioritizing this dimension would favor Rank 2, provided Rank 1 gaps can be resolved."
+            ).format(dim_name)
+
+        trade_offs.append(TradeOffItem(
+            dimension=dim,
+            rank_1_status=r1_label,
+            rank_2_status=r2_label,
+            decision_implication=implication
+        ))
+
+        if len(trade_offs) >= 4:
+            break
+
+    if not trade_offs:
+        delta = rank_1_score.total_score - rank_2_score.total_score
+        trade_offs.append(TradeOffItem(
+            dimension="overall_score",
+            rank_1_status="Score: {}/100 ({} confidence)".format(
+                rank_1_score.total_score, rank_1_score.confidence.value),
+            rank_2_status="Score: {}/100 ({} confidence)".format(
+                rank_2_score.total_score, rank_2_score.confidence.value),
+            decision_implication=(
+                "Rank 1 scores {:.1f} points {} overall. "
+                "Both candidates have similar evidence profiles on the key dimensions."
+            ).format(abs(delta), "higher" if delta > 0 else "lower")
+        ))
 
     return trade_offs

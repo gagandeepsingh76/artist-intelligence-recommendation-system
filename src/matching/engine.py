@@ -77,11 +77,17 @@ class RecommendationEngine:
             fu for fu in hirer_artifact.follow_up_updates if fu.update_id == "01_cafe_music_update"
         )
 
+        cafe_initial_brief = next(
+            b for b in hirer_artifact.briefs if b.brief_id == "01_cafe_music_whatsapp"
+        )
+
         reranking_result: ReRankingResult = process_follow_up_reranking(
             initial_recommendation=cafe_initial_rec,
             follow_up_record=cafe_follow_up,
-            all_artists=artists
+            all_artists=artists,
+            initial_brief=cafe_initial_brief
         )
+
 
         updated_artifact = UpdatedRecommendationArtifact(
             metadata={

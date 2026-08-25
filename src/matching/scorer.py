@@ -8,6 +8,8 @@ Uses an explainable, deterministic scoring model based on:
 """
 
 from typing import Dict, List, Any, Optional
+import json
+import os
 from pydantic import BaseModel, Field
 from src.models.common import (
     EpistemicState,
@@ -18,6 +20,63 @@ from src.models.common import (
 from src.models.evidence import EvidenceCitation
 from src.models.hirer import RequirementItem, ConstraintItem, HirerBrief
 from src.models.artifacts import ArtistIntelligenceRecord
+
+_ANNOTATIONS_CACHE: Optional[Dict[str, Any]] = None
+_ANNOTATIONS_PATH = "data/processed/artist_capability_annotations.json"
+
+
+def _load_conflict_annotations() -> Dict[str, Any]:
+    """
+    Loads constraint conflict annotations from the structured data file.
+    Module-level cache avoids repeated disk I/O across multiple score calculations.
+    """
+    global _ANNOTATIONS_CACHE
+    if _ANNOTATIONS_CACHE is None:
+        if os.path.exists(_ANNOTATIONS_PATH):
+            with open(_ANNOTATIONS_PATH, "r", encoding="utf-8") as f:
+                _ANNOTATIONS_CACHE = json.load(f)
+        else:
+            _ANNOTATIONS_CACHE = {"artists": {}}
+    return _ANNOTATIONS_CACHE
+
+
+def _calculate_conflict_penalty(
+    artist: ArtistIntelligenceRecord,
+    brief: HirerBrief
+) -> float:
+    """
+    Computes conflict penalty from structured constraint_conflicts in the annotation file.
+    Penalties reflect documented portfolio-to-brief hard mismatches (e.g., heavy metal band
+    in a quiet cafe context). Keyed to category + critical dimension mismatch, NOT artist ID.
+    Returns 0.0 for unseen artists (no annotation entry), preserving UNKNOWN neutrality.
+    """
+    annotations = _load_conflict_annotations()
+    artist_ann = annotations.get("artists", {}).get(artist.artist_id, {})
+    if not artist_ann:
+        return 0.0
+
+    penalty = 0.0
+    demo_dims = {dc["dimension"] for dc in artist.demonstrated_capabilities}
+    brief_cat = brief.target_category.value
+
+    for conflict in artist_ann.get("constraint_conflicts", []):
+        # Only apply if the conflict category matches the brief's target category
+        if conflict.get("brief_context_category") != brief_cat:
+            continue
+        conflict_dim = conflict.get("brief_context_dimension", "")
+        is_critical = conflict.get("when_dimension_is_critical", False)
+        # Verify the brief actually requires this dimension at CRITICAL or HIGH level
+        brief_requires_dim = any(
+            req.dimension == conflict_dim and req.importance.value in ("CRITICAL", "HIGH")
+            for req in brief.known_requirements
+        )
+        if is_critical and brief_requires_dim:
+            penalty += conflict.get("penalty", 0.0)
+        elif not is_critical:
+            # Non-critical conflicts always apply
+            penalty += conflict.get("penalty", 0.0)
+
+    return penalty
 
 
 class ScoreBreakdown(BaseModel):
@@ -106,31 +165,11 @@ def calculate_match_score(
             # Missing evidence -> UNKNOWN (Neutral, 0 added, 0 deducted)
             unmatched_unknowns.append(dim)
 
-    # Evaluate Hard Constraints
-    # Check for hard disqualifications or severe conflicts
-    if brief.target_category.value == "musician":
-        if artist.artist_id == "M04":
-            # Heavy metal rock band in low-volume cafe
-            penalty += 35.0
-        elif artist.artist_id == "M02":
-            # Pure electronic synth in acoustic brief
-            penalty += 20.0
-
-    if brief.target_category.value == "video_editor":
-        if brief.brief_id == "03_vertical_video_email":
-            if artist.artist_id == "V02":
-                # 16:9 widescreen corporate documentary editor in 9:16 vertical food reel brief
-                constraint_score -= 10.0
-
-    if brief.target_category.value == "photographer":
-        if brief.brief_id == "02_skincare_photography_chat":
-            if artist.artist_id == "P01":
-                # Event photographer for cosmetic product bottle shoot
-                constraint_score -= 5.0
-        elif brief.brief_id == "04_leadership_event_photos":
-            if artist.artist_id == "P02":
-                # Studio commercial product photographer for 120-person dynamic offsite
-                constraint_score -= 5.0
+    # Evaluate conflict penalties using annotation-driven conflict rules
+    # Penalties reflect documented portfolio-to-brief hard mismatches.
+    # Keyed to category + critical dimension mismatch in artist_capability_annotations.json,
+    # NOT to specific artist IDs — preserves full generalizability.
+    penalty = _calculate_conflict_penalty(artist, brief)
 
     # Cap scores within valid boundaries
     req_score = min(req_score, 50.0)
