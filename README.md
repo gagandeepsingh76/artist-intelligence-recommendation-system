@@ -151,10 +151,17 @@ In strict accordance with the Stage 3 assessment scope boundaries:
 
 ## 9. Functional Screenshots
 
-| Recommendation & Decision Intelligence View | Follow-Up Re-Ranking & Score Delta View |
-| :---: | :---: |
-| ![Recommendation Decision View](docs/images/01_recommendation_decision_view.png) | ![Follow-Up Re-Ranking View](docs/images/02_reranking_flow_view.png) |
-| *Evidence-led recommendation view showing Top 2 candidates, mathematical score breakdowns, demonstrated citations, comparative trade-offs, and $\le 2$ refinement questions.* | *Dynamic follow-up re-ranking view showing parameter changes from update briefs propagating into recalculated candidate scores and rank movements.* |
+### 1. Decision Intelligence & Top 2 Recommendation View
+![Recommendation Decision View](docs/images/01_recommendations.png)
+*Evidence-led recommendation view displaying candidate rankings, mathematical score breakdowns, demonstrated citations, comparative trade-offs, and $\le 2$ refinement questions.*
+
+### 2. Artist Intelligence & Grounded Evidence Dossier
+![Artist Intelligence View](docs/images/02_artist_intelligence.png)
+*Structured artist capability dossier demonstrating strict epistemic separation between self-reported profile claims and verified multimodal media citations.*
+
+### 3. Dynamic Follow-Up Re-Ranking & Score Movements
+![Follow-Up Re-Ranking View](docs/images/03_reranking.png)
+*Transparent re-ranking view showing updated hirer parameters propagating into recalculated candidate match scores, rank movement deltas, and rationale explanations.*
 
 ---
 
