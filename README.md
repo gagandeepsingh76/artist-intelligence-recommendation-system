@@ -1,165 +1,186 @@
 # Artist Intelligence & Recommendation System (AIRS)
 
-> A deterministic, evidence-grounded decision intelligence engine that evaluates creative talent (photographers, musicians, video editors) and pairs them with unstructured hirer briefs using verified multimodal portfolio evidence.
+> An evidence-led decision intelligence system that evaluates creative talent from multimodal portfolio evidence and matches them to sparse, incomplete hirer conversations.
 
 ---
 
-## 1. Project Overview & Problem Statement
+## 1. Project Purpose
 
-Evaluating freelance creative talent from raw portfolio assets and conversational hiring briefs is fundamentally prone to cognitive bias, ungrounded claims, and communication mismatch.
-
-**AIRS** solves this by enforcing strict **epistemic discipline**:
-- Distinguishes **verified multimodal portfolio evidence** (`DEMONSTRATED_EVIDENCE`) from **self-reported claims** (`CLAIM`), **operational assumptions** (`ASSUMPTION`), and **explicit unknowns** (`UNKNOWN`).
-- Generates transparent, explainable **Top 2 recommendations** per brief with exact media citations (file names, timestamps, frame observations).
-- Generates **comparative trade-off analyses** and **at most 2 high-impact refinement questions**.
-- Handles follow-up requirement changes with transparent **before/after re-ranking**.
+AIRS addresses two connected creative marketplace intelligence problems defined in the SEKERON Stage 3 assessment:
+1. **Artist Intelligence:** Evaluating incomplete portfolio profiles containing self-reported claims, non-standard folder conventions, and multimodal work samples to establish verified capabilities without making unsupported personality judgments.
+2. **Contextual Recommendations:** Interpreting informal, ambiguous hirer conversations to generate transparent **Top 2 recommendations**, comparative trade-offs, explicit uncertainty boundaries, and at most **two high-impact refinement questions**, followed by **dynamic re-ranking** when new scope information arrives.
 
 ---
 
-## 2. Dataset Overview & Verified Anomalies
+## 2. Assignment Requirement → Implementation Mapping
 
-- **Total Files Scanned:** 149 files across 15 artist profiles and 4 hirer conversation records.
-- **Artists:** 15 total (5 Photographers, 5 Musicians, 5 Video Editors).
-- **Media Files Scanned:** 120 files (Images: JPG/PNG/WebP, Audio: MP3/WAV, Video: MP4).
-- **Hirer Briefs:** 4 initial briefs (`01_cafe_music_whatsapp`, `02_skincare_photography_chat`, `03_vertical_video_email`, `04_leadership_event_photos`) + 1 follow-up update (`01_cafe_music_update`).
-- **Preserved Anomalies (7 Documented):**
-  - Letter-O vs Number-0 identifier typos (`PO4`, `PO5`, `VO4`, `VO5` preserved as raw folder names and mapped canonical internally).
-  - Multi-artist identity splits (e.g. `V03` folder contains Rahul Gupta resume and Tara D'Souza video portfolio).
-  - Raw dataset remains **100% immutable and intact** in `data/raw/Data set/`.
+| Assignment Requirement (PDF) | How AIRS Implements It | Evidence / Location |
+| :--- | :--- | :--- |
+| **All 15 Artists Across 3 Categories** | Processes 5 photographers, 5 musicians, and 5 video editors from immutable raw data (`data/raw/Data set/`). | [`dataset_inventory.json`](data/processed/dataset_inventory.json) |
+| **Category-Specific Capability Dimensions** | Defined distinct taxonomies per domain (e.g., *Acoustic Live Performance* vs *Controlled Studio Lighting* vs *Vertical Short-Form Editing*). | [`capability_dimensions.py`](src/framework/capability_dimensions.py) |
+| **Epistemic State Separation** | Mathematically separates verified evidence (`DEMONSTRATED_EVIDENCE`) from self-reported claims (`CLAIM`), assumptions (`ASSUMPTION`), and missing data (`UNKNOWN`). | [`models/common.py`](src/models/common.py), [`scorer.py`](src/matching/scorer.py) |
+| **Evidence Citations with Timestamps/Frames** | Cites exact file paths, container parameters, image frame dimensions, and audio/video timestamp intervals. | [`artist_intelligence.jsonl`](data/processed/artist_intelligence.jsonl) |
+| **Explicit Uncertainty & Neutral Unknowns** | Unobserved dimensions are marked `UNKNOWN` with zero positive credit and **zero negative penalty** (*Unknown $\neq$ Incapable*). | [`decision_note.md`](decision_note.md), [`scorer.py`](src/matching/scorer.py) |
+| **Sensible Media Selection Policy** | Heuristic sampling selecting top 4–6 representative assets per artist based on format and validity, logging all exclusions. | [`media_selection_log.json`](data/processed/media_selection_log.json) |
+| **Preservation of Dataset Anomalies** | Preserves raw typos (`PO4`, `PO5`, `VO4`, `VO5`), multi-artist folder splits (`V03`), and corrupted folders without manual repair. | [`dataset_inventory.json`](data/processed/dataset_inventory.json) |
+| **Hirer Intent & Transcript Grounding** | Ingests 4 conversational briefs with 100% verbatim quote backing for requirements, constraints, and ambiguities. | [`hirer_intelligence.json`](data/processed/hirer_intelligence.json) |
+| **Top 2 Recommendations & Trade-Offs** | Evaluates category candidates, generates ScoreBreakdowns, comparative dimensional trade-offs, and dynamic fit rationales. | [`recommendations.json`](data/processed/recommendations.json) |
+| **Max 2 High-Impact Refinement Questions** | Formulates up to 2 prioritized questions targeting decision-critical unknowns capable of flipping rank order. | [`ranking.py`](src/matching/ranking.py) |
+| **Dynamic Follow-Up Re-Ranking** | Ingests `01_cafe_music_update`, clones brief, recalculates candidate scores, and logs rank deltas and explanations. | [`updated_recommendation.json`](data/processed/updated_recommendation.json) |
 
 ---
 
-## 3. Repository Architecture
+## 3. Actual Technical Pipeline
 
 ```text
-artist-intelligence-recommendation-system/
-├── data/
-│   ├── raw/Data set/              # 149 original dataset files (IMMUTABLE)
-│   └── processed/                 # Generated and verified JSON/JSONL artifacts
-│       ├── dataset_inventory.json
-│       ├── artist_intelligence.jsonl
-│       ├── media_selection_log.json
-│       ├── hirer_intelligence.json
-│       ├── recommendations.json
-│       └── updated_recommendation.json
-├── src/
-│   ├── models/                    # Pydantic v2 domain schemas & artifact contracts
-│   ├── ingestion/                 # Safe dataset scanner & file loaders
-│   ├── processing/                # docx profile & txt conversation extractors
-│   ├── framework/                 # Category capability dimensions & media selection
-│   ├── intelligence/              # Artist & Hirer intelligence pipelines
-│   ├── matching/                  # Scorer, Trade-off analyzer, Ranker, Re-ranker
-│   ├── api/                       # FastAPI REST backend application & data service
-│   └── utils/                     # File utilities & custom error formatting
-├── frontend/                      # Evaluator Next.js 14 console (TypeScript, Tailwind)
-│   ├── app/                       # App Router pages (Dashboard, Artists, Hirers, Recs, Reranking)
-│   ├── components/                # Modular UI & decision intelligence components
-│   ├── lib/                       # Typed API client with cold-start retry
-│   └── tests/                     # Jest component and client test suite
-├── scripts/
-│   └── verify_all.py              # Master end-to-end verification script
-├── tests/                         # Comprehensive Pytest suite (60 tests passing)
-├── decision_note.md               # Technical decision note (Mandatory Assessment Deliverable)
-├── README.md                      # Project documentation (Mandatory Assessment Deliverable)
-├── AI_USAGE.md                    # Transparent AI usage disclosure (Mandatory Assessment Deliverable)
-├── .env.example                   # Backend environment configuration template
-└── pytest.ini                     # Pytest configuration
+Raw Artist Profiles + Portfolio Media (149 Files) + Hirer Conversations (4 Briefs + 1 Follow-Up)
+                                      ↓
+      Dataset Ingestion & Anomaly Preserving Scanner (src/ingestion/)
+                                      ↓
+      Physical Container Inspection (Pillow / Headers) + Human Portfolio Annotations
+                                      ↓
+      Structured Intelligence Generation (artist_intelligence.jsonl, hirer_intelligence.json)
+      [DEMONSTRATED_EVIDENCE | CLAIM | ASSUMPTION | UNKNOWN]
+                                      ↓
+      Category-Isolated Scoring Engine (src/matching/scorer.py)
+      [Requirement Fit (Max 50) + Evidence Strength (Max 30) + Constraint Baseline (20) - Penalties]
+                                      ↓
+      Top 2 Recommendation & Trade-Off Synthesizer (src/matching/ranking.py, tradeoffs.py)
+                                      ↓
+      Decision-Critical Refinement Question Selector (Max 2 Questions)
+                                      ↓
+      Follow-Up Parameter Propagation & Re-Ranking Engine (src/matching/reranking.py)
 ```
 
----
-
-## 4. Mandatory Deliverables vs Optional UI Product Layer
-
-| Deliverable | Purpose | Mandatory / Optional |
-|---|---|---|
-| [`data/processed/artist_intelligence.jsonl`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/data/processed/artist_intelligence.jsonl) | 15 structured artist dossiers with claims vs evidence | **Mandatory** |
-| [`data/processed/recommendations.json`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/data/processed/recommendations.json) | Top 2 recommendations, fit reasons, citations, max 2 questions | **Mandatory** |
-| [`data/processed/updated_recommendation.json`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/data/processed/updated_recommendation.json) | Follow-up re-ranking for cafe music launch night | **Mandatory** |
-| [`decision_note.md`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/decision_note.md) | Technical rationale, trade-offs, and scoring methodology | **Mandatory** |
-| [`README.md`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/README.md) | Reproduction guide and system documentation | **Mandatory** |
-| [`AI_USAGE.md`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/AI_USAGE.md) | Transparent AI tooling usage disclosure | **Mandatory** |
-| [`src/api/`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/src/api/) (FastAPI Backend) | REST API exposing artifacts cleanly | *Extension Layer* |
-| [`frontend/`](file:///c:/Users/HP/OneDrive/Documents/Desktop/artist-intelligence-recommendation-system/frontend/) (Next.js Console) | Interactive dark intelligence console UI | *Extension Layer* |
+### Implementation Architecture & Boundaries:
+- **Media Analyzers (`inspect_image_asset`, `inspect_audio_asset`, `inspect_video_asset`):** Programmatically extract verifiable file metadata (Pillow resolution, aspect ratio tiers, format, file sizes, container validation).
+- **Semantic Capabilities (`artist_capability_annotations.json`):** Semantic observations (e.g., *"two-part vocal harmony"*, *"controlled cosmetic reflection"*) originate from human portfolio review stored in an externalized JSON database.
+- **Decoupled Scoring & Matching:** The scoring engine, ranking logic, trade-off analyzer, and re-ranking pipeline contain **zero hardcoded artist ID conditions**. Unseen artists fallback cleanly to `UNKNOWN` dimensions.
 
 ---
 
-## 5. Quick Start & Reproduction Instructions
+## 4. Evidence and Epistemic Boundaries
+
+AIRS classifies all domain information into four strictly isolated epistemic tiers:
+
+| Epistemic State | Operational Definition | Scoring Weight | Example |
+| :--- | :--- | :--- | :--- |
+| `DEMONSTRATED_EVIDENCE` | Observable capability directly substantiated by raw portfolio media assets. | **100% credit** (1.0x) + Evidence Bonus | Live video clip showing acoustic fingerpicking and vocal harmony. |
+| `CLAIM` | Self-reported assertion in profile document without verifying media sample. | **40% max credit** (0.4x) | Profile states *"expert in drone videography"*, but no drone files exist. |
+| `ASSUMPTION` | Operational inference derived from venue type or gig situation. | **Context only** (0.0x) | Assuming 80-guest cafe venue requires compact equipment footprint. |
+| `UNKNOWN` | Required dimension unaddressed in portfolio or hirer conversation. | **Neutral** (0.0x, 0 penalty) | Unknown if artist owns a portable PA system (*Unknown $\neq$ Incapable*). |
+
+> **Epistemic Rule:** Missing information is never penalized as negative capability. An artist lacking food video samples receives 0 requirement points for food editing, but suffers no penalty deduction.
+
+---
+
+## 5. Recommendation and Re-Ranking Logic
+
+### Mathematical Scoring Formula
+The match score $S \in [0, 100]$ between candidate artist $A$ and brief $B$ is computed as:
+
+$$S = \text{Fit}(A, B) + \text{EvidenceBonus}(A, B) + \text{ConstraintScore}(A, B) - \text{Penalty}(A, B)$$
+
+1. **Requirement Fit Score ($\le 50.0$ pts):**
+   $$\text{Fit}(A, B) = \min\left(50.0, \sum_{r \in B.\text{reqs}} w_{\text{base}} \times M_{\text{importance}}(r) \times M_{\text{status}}(A, r)\right)$$
+   - Base points per requirement: $w_{\text{base}} = 50.0 / N_{\text{reqs}}$
+   - Importance Multipliers ($M_{\text{importance}}$): `CRITICAL` = 1.2, `HIGH` = 1.0, `MEDIUM` = 0.8, `LOW` = 0.5
+   - Epistemic Status Multipliers ($M_{\text{status}}$): `DEMONSTRATED` = 1.0, `CLAIM` = 0.4, `UNKNOWN` = 0.0
+2. **Evidence Strength Bonus ($\le 30.0$ pts):**
+   $$\text{EvidenceBonus}(A, B) = \min\left(30.0, \sum_{c \in \text{citations}} \text{Bonus}(c.\text{strength})\right)$$
+   - Bonus points: `STRONG` = +6.0, `MODERATE` = +4.0, `WEAK` = +2.0, `CLAIM` = +1.0
+3. **Constraint Compatibility Baseline ($20.0$ pts):**
+   - Starts at $+20.0$. Deducts $-5.0$ for soft preference mismatches.
+4. **Conflict Penalties:**
+   - Deducts $-10.0$ for explicit capability conflicts (e.g., high-decibel heavy metal band applied to quiet acoustic brief).
+
+### Follow-Up Re-Ranking Execution
+When `01_cafe_music_update` modifies scope from ambient background music to a 45-minute headline showcase:
+1. `_apply_follow_up_to_brief` injects `headline_stage_dynamism` (`CRITICAL` importance) into a cloned `HirerBrief`.
+2. The pipeline re-runs `rank_artists_for_brief` across all musician candidates.
+3. Candidate `M01` (*Meera & Arjun*) rises to Rank 1 ($82.0 \to 86.8$) due to demonstrated dynamic medley assets, while `M03` (*Raghav Sen*) shifts to Rank 2 ($85.0 \to 80.0$) due to unaddressed headline energy.
+
+---
+
+## 6. Evaluation and Verification
+
+AIRS includes comprehensive automated regression, compliance, and end-to-end verification suites.
+
+```bash
+# 1. Run full Python test suite (69 tests)
+python -m pytest -v
+
+# 2. Run master compliance & reproducibility verification
+python scripts/verify_all.py
+
+# 3. Run frontend unit tests (9 tests)
+npm test --prefix frontend
+
+# 4. Validate frontend production build
+npm run build --prefix frontend
+```
+
+### Verification Test Suite Results:
+- **`pytest -v`:** **69 / 69 passed** (100% passing across inventory, models, pipelines, API, and scoring remediation).
+- **`scripts/verify_all.py`:** **9 / 9 compliance checks passed** (validating all JSON/JSONL schemas, anomaly preservation, quotation backing, Top 2 enforcement, $\le 2$ questions limit, and follow-up delta verification).
+- **`npm test --prefix frontend`:** **9 / 9 passed** (2 test suites covering API client retry logic and decision components).
+- **`npm run build --prefix frontend`:** **8 / 8 routes compiled successfully** with zero TypeScript or build errors.
+
+---
+
+## 7. Limitations and Honest Scope
+
+In strict accordance with the Stage 3 assessment scope boundaries:
+
+1. **Controlled Assessment Scale:** The evaluation dataset consists of 15 synthetic/anonymized artist profiles and 4 conversational briefs.
+2. **Semantic Annotation Grounding:** Creative capability tagging relies on human-reviewed structured annotations rather than runtime deep learning or computer vision inference.
+3. **Deterministic Heuristic Matching:** The scoring engine is rule-based and deterministic rather than trained on historical conversion or hiring outcome data.
+4. **No Trust or Personality Profiling:** Per assessment rules, the system explicitly does not infer punctuality, character, reliability, or friendliness from portfolio media or profile photos.
+5. **Production Requirements:** Expanding to production scale would require automated media feature extraction models, embedding-based semantic retrieval, annotation verification governance, and continuous human-in-the-loop validation.
+
+---
+
+## 8. Optional Interactive Inspection
+
+> **Note on Frontend & Deployment:** The original assignment explicitly prioritizes the decision system and evidence pipeline. The web interface and cloud deployment below are **optional inspection layers** provided solely to facilitate interactive exploration of the evidence records, score breakdowns, trade-offs, and re-ranking dynamics.
+
+- **Live Web Console:** [https://artist-intelligence-recommendation.vercel.app](https://artist-intelligence-recommendation.vercel.app)
+- **Source Code Repository:** [https://github.com/gagandeepsingh76/artist-intelligence-recommendation-system](https://github.com/gagandeepsingh76/artist-intelligence-recommendation-system)
+
+---
+
+## 9. Functional Screenshots
+
+| Recommendation & Decision Intelligence View | Follow-Up Re-Ranking & Score Delta View |
+| :---: | :---: |
+| ![Recommendation Decision View](docs/images/01_recommendation_decision_view.png) | ![Follow-Up Re-Ranking View](docs/images/02_reranking_flow_view.png) |
+| *Evidence-led recommendation view showing Top 2 candidates, mathematical score breakdowns, demonstrated citations, comparative trade-offs, and $\le 2$ refinement questions.* | *Dynamic follow-up re-ranking view showing parameter changes from update briefs propagating into recalculated candidate scores and rank movements.* |
+
+---
+
+## 10. Quickstart & Local Reproduction
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+ and npm (for frontend console)
+- Python 3.10+
+- Node.js 18+ (optional, for web console)
 
-### Step 1: Environment Setup
+### Single Documented Run Command
+To run the entire pipeline from scratch, regenerate all verified artifacts, and run the complete test suite:
+
 ```bash
-# Clone the repository and enter directory
-cd artist-intelligence-recommendation-system
+# Install Python dependencies
+pip install -r requirements.txt
 
-# Create and activate Python virtual environment
-python -m venv venv
-# On Windows:
-.\venv\Scripts\activate
-# On Linux/macOS:
-source venv/bin/activate
-
-# Install backend dependencies
-pip install fastapi uvicorn pydantic python-docx pytest anyio httpx
-```
-
-### Step 2: Run Master Verification Script
-Validate the entire pipeline, all 6 processed artifacts, citations, and compliance in one command:
-```bash
+# Execute end-to-end verification script (reproduces and validates all artifacts)
 python scripts/verify_all.py
 ```
 
-### Step 3: Run Backend Tests (60 Tests)
+### Optional: Running the Web Console Locally
 ```bash
-pytest -v
+# Terminal 1: Start FastAPI Backend
+python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000
+
+# Terminal 2: Start Next.js Frontend
+cd frontend && npm install && npm run dev
+# Open http://localhost:3000 in your browser
 ```
-
-### Step 4: Run Backend FastAPI Server
-```bash
-uvicorn src.api.main:app --reload --port 8000
-```
-- Interactive OpenAPI Docs: `http://localhost:8000/docs`
-- Health check: `http://localhost:8000/api/health`
-
-### Step 5: (Optional) Run Frontend Console
-```bash
-cd frontend
-npm install
-npm test
-npm run dev
-```
-Open `http://localhost:3000` to interact with the visual intelligence console.
-
----
-
-## 6. Core Methodology & Epistemic Discipline
-
-### Epistemic State Isolation
-1. **`DEMONSTRATED_EVIDENCE`:** Verified from raw audio/image/video files with timestamp/frame citations.
-2. **`CLAIM`:** Profile statements capped at 40% capability weight.
-3. **`ASSUMPTION`:** Explicit operational working hypotheses with rationale.
-4. **`UNKNOWN`:** Unstated information. **Strict Neutrality:** $0\text{ pts}$ added, $0\text{ pts}$ deducted (never penalized).
-
-### Transparent Scoring Breakdown (0–100 Scale)
-$$\text{Total Score} = \text{Requirement Fit (0–50)} + \text{Evidence Strength (0–30)} + \text{Constraint Compatibility (0–20)} - \text{Conflict Penalty (0–40)}$$
-- **Requirement Fit (0–50 pts):** Base allocation per requirement ($\frac{50.0}{N_{\text{req}}}$) scaled by importance ($W_{\text{CRITICAL}} = 1.2$, $W_{\text{STD}} = 1.0$, $W_{\text{LOW}} = 0.8$) and demonstration level ($S_{\text{STRONG}} = 1.0$, $S_{\text{MOD}} = 0.8$, $S_{\text{LIM}} = 0.6$, $S_{\text{CLAIM}} = 0.4$, $S_{\text{UNKNOWN}} = 0.0$).
-- **Evidence Strength (0–30 pts):** Empirical bonus per verified media requirement ($+6\text{ pts}$ STRONG, $+4\text{ pts}$ MODERATE, $+2\text{ pts}$ LIMITED, $+1\text{ pt}$ CLAIM, $+0\text{ pts}$ UNKNOWN), capped at 30.
-- **Constraint Compatibility (0–20 pts):** Baseline 20.0 pts for category and format compatibility.
-- **Conflict Penalties (0–40 pts):** Dedicated penalties for direct hard constraint or operational clashes.
-
----
-
-## 7. Recommendation Summary
-
-| Brief | Hirer | Category | Rank 1 Candidate | Rank 2 Candidate | Refinement Questions |
-|---|---|---|---|---|---|
-| `01_cafe_music_whatsapp` | Rhea | `musician` | **M01** (Meera & Arjun) — `HIGH` | **M03** (Raghav Sen) — `HIGH` | (1) Venue PA setup; (2) Hindi vs English split |
-| `02_skincare_photography_chat` | Nidhi | `photographer` | **P02** (Kabir Mehta) — `HIGH` | **PO5** (Frames) — `HIGH` | (1) Studio delivery vs on-site; (2) Hand models |
-| `03_vertical_video_email` | Manu K. | `video_editor` | **V01** (Nisha Kapoor) — `HIGH` | **V03** (Tara D'Souza) — `HIGH` | (1) Music licensing; (2) Dialogue timecodes |
-| `04_leadership_event_photos` | Shalini | `photographer` | **P01** (Aanya Rao) — `HIGH` | **PO5** (Frames) — `MEDIUM` | (1) On-camera flash rules; (2) Budget ceiling |
-
-### Follow-Up Re-Ranking (`01_cafe_music_update`)
-- **Scope Shift:** 3-hr ambient background ($\approx ₹8\text{k}$) $\rightarrow$ 45-min launch night headline showcase set ($₹15,000$).
-- **Result:** `M01` maintained **Rank 1** with increased score ($92.0 \rightarrow 96.0$) due to demonstrated energetic acoustic medley rehearsals. `M03` held **Rank 2** ($81.0 \rightarrow 74.0$) as an acoustic fallback due to slow-tempo folk repertoire mismatch.
